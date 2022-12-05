@@ -14,7 +14,7 @@ stackRows.forEach((row) => {
     stackPosition++;
   }
 });
-// Should really mutate stacks, but here we are
+// Shouldn't really mutate stacks, but here we are
 const stack9001 = JSON.parse(JSON.stringify(stacks));
 
 // Process instructions part one
