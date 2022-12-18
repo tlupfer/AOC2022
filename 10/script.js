@@ -35,3 +35,32 @@ operations.forEach((line) => {
 });
 
 console.log({ sum });
+
+let cycle = 0;
+let x = 1;
+
+const drawPixel = () => {
+  const position = (cycle - 1) % 40;
+  if (position === 0) process.stdout.write("\n");
+  if (Math.abs(position - x) <= 1) {
+    process.stdout.write("#");
+  } else {
+    process.stdout.write(" ");
+  }
+};
+
+operations.forEach((line) => {
+  if (line.match(/noop/)) {
+    cycle++;
+    drawPixel();
+  } else {
+    const [value] = line.match(/[^ ]+$/).map(Number);
+    cycle++;
+    drawPixel();
+    cycle++;
+    drawPixel();
+    x += value;
+  }
+});
+
+process.stdout.write("\n");
