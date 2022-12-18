@@ -100,50 +100,53 @@ const longTailVisited = new Set(['0,0']);
 // Part two
 let knots = [...Array(10)].map(() => [0,0]);
 instructions.forEach((move) => {
-  const positions = parseInt(move[1], 10);
-  // Move head
-  switch (move[0]) {
-    case 'U':
-      knots[0][1] -= positions;
-      break;
-    case 'D':
-      knots[0][1] += positions;
-      break;
-    case 'R':
-      knots[0][0] += positions;
-      break;
-    case 'L':
-      knots[0][0] -= positions;
-      break;
-    default:
-      break;
-  }
-  for (let currentKnot = 1; currentKnot < knots.length; currentKnot++) {
-    let current = knots[currentKnot];
-    let previous = knots[currentKnot - 1];
-    while (!areTouching(previous, current)) {
-      longTailVisited.add(knots[9].join(','));
-      // Need diagonal 
-      if (previous[0] !== current[0] && previous[1] !== current[1]) {
-        [previous, current] = moveDiagonal(previous, current);
-        knots[currentKnot] = current;
-        knots[currentKnot - 1] = previous;
-      } else {
-        if (previous[0] !== current[0]) {
-          if (previous[0] > current[0]) {
-            knots[currentKnot][0]++;
-          }
-          if (previous[0] < current[0]) {
-            knots[currentKnot][0]--;
-          }
-        } else if (previous[1] !== current[1]) {
-          if (previous[1] > current[1]) {
-            knots[currentKnot][1]++;
-          }
-          if (previous[1] < current[1]) {
-            knots[currentKnot][1]--;
-          }
-        } 
+  let positions = parseInt(move[1], 10);
+  while (positions > 0) {
+    // Move head
+    switch (move[0]) {
+      case 'U':
+        knots[0][1]--;
+        break;
+      case 'D':
+        knots[0][1]++;
+        break;
+      case 'R':
+        knots[0][0]++;
+        break;
+      case 'L':
+        knots[0][0]--;
+        break;
+      default:
+        break;
+    }
+    positions--;
+    for (let currentKnot = 1; currentKnot < knots.length; currentKnot++) {
+      let current = knots[currentKnot];
+      let previous = knots[currentKnot - 1];
+      while (!areTouching(previous, current)) {
+        longTailVisited.add(knots[9].join(','));
+        // Need diagonal 
+        if (previous[0] !== current[0] && previous[1] !== current[1]) {
+          [previous, current] = moveDiagonal(previous, current);
+          knots[currentKnot] = current;
+          knots[currentKnot - 1] = previous;
+        } else {
+          if (previous[0] !== current[0]) {
+            if (previous[0] > current[0]) {
+              knots[currentKnot][0]++;
+            }
+            if (previous[0] < current[0]) {
+              knots[currentKnot][0]--;
+            }
+          } else if (previous[1] !== current[1]) {
+            if (previous[1] > current[1]) {
+              knots[currentKnot][1]++;
+            }
+            if (previous[1] < current[1]) {
+              knots[currentKnot][1]--;
+            }
+          } 
+        }
       }
     }
   }
