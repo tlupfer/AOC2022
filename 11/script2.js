@@ -30,7 +30,7 @@ class Monkey {
     return this.inspectCount;
   }
 
-  inspectAllItems(divideByThree = true) {
+  inspectAllItems() {
     while (this.items.length > 0) {
       const item = this.items.shift();
       this.inspectItem(item, divideByThree);
