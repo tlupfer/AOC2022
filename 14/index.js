@@ -57,12 +57,14 @@ const dropSand = () => {
   }
 };
 
-let units = 0;
+const getTotal = () => grid.reduce((count, row) => count + row.filter(c => c === 'O').length, 0);
 
+let lastTotal = 0;
 while (true) {
   dropSand();
-  units++;
-  if (units === 10000) break;
+  const newTotal = getTotal();
+  if (newTotal === lastTotal) break;
+  lastTotal = newTotal;
 }
 
 grid.forEach((l) => {
@@ -70,4 +72,4 @@ grid.forEach((l) => {
   process.stdout.write("\n");
 });
 
-console.log(grid.reduce((count, row) => count + row.filter(c => c === 'O').length, 0));
+console.log(getTotal());
