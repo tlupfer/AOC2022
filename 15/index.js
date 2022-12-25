@@ -25,57 +25,26 @@ class Sensor {
 
   setClosestBeacon (beacon) {
     this.closestBeacon = beacon;
-    this.blackout = this.getBeaconBlackout();
   }
 
   getBeaconDistance () {
     const [bx, by] = this.closestBeacon.getCoordinates();
-    return Math.abs(bx - this.x) + Math.abs(by - this.y) + 1;
-  }
-
-  getBeaconBlackout () {
-    const noBeacons = new Set([`${this.x},${this.y}`]);
-    const distanceToBeacon = this.getBeaconDistance();
-    for (let row = 0; row <= distanceToBeacon; row++) {
-      const col = distanceToBeacon - row;
-      // Vertical
-      for (let j = 0; j < row; j++) {
-        noBeacons.add(`${this.x},${this.y - j}`);
-        noBeacons.add(`${this.x},${this.y + j}`);
-      }
-      // Horizontal
-      for (let k = 0; k < col; k++) {
-        noBeacons.add(`${this.x - k},${this.y - row}`);
-        noBeacons.add(`${this.x - k},${this.y + row}`);
-        noBeacons.add(`${this.x + k},${this.y - row}`);
-        noBeacons.add(`${this.x + k},${this.y + row}`);
-      }
-    }
-    return noBeacons;
+    return Math.abs(bx - this.x) + Math.abs(by - this.y);
   }
 
   isBeaconImpossible (x, y) {
-    return this.blackout.has(`${x},${y}`);
+    const distance = this.getBeaconDistance();
+    const yTravel = Math.abs(y - this.y)
+    const xTravel = Math.abs(x - this.x);
+    return (yTravel + xTravel) <= distance;
   }
 
   getBlackoutBoundaries () {
-    const arr = Array.from(this.blackout);
-    const minX = arr.reduce((val, coordinates) => {
-      const [x, y] = coordinates.split(',').map(Number);
-      return x < val ? x : val;
-    }, this.x);
-    const maxX = arr.reduce((val, coordinates) => {
-      const [x, y] = coordinates.split(',').map(Number);
-      return x > val ? x : val;
-    }, this.x);
-    const minY = arr.reduce((val, coordinates) => {
-      const [x, y] = coordinates.split(',').map(Number);
-      return y < val ? y : val;
-    }, this.y);
-    const maxY = arr.reduce((val, coordinates) => {
-      const [x, y] = coordinates.split(',').map(Number);
-      return y > val ? y : val;
-    }, this.y);
+    const distance = this.getBeaconDistance();
+    const minX = this.x - distance;
+    const maxX = this.x + distance;
+    const minY = this.y - distance;
+    const maxY = this.y + distance;
     return [minX, maxX, minY, maxY];
   }
 }
@@ -105,8 +74,8 @@ const impossible = new Set();
 for (let x = colStart; x <= colFinish; x++) {
   if (sensors.some(sensor => sensor.isBeaconImpossible(x, 2000000))
       && beacons.every(beacon => !beacon.isBeaconAt(x, 2000000))) {
-    impossible.add(`${x},2000000`).size;
+    impossible.add(`${x},2000000`);
   }
 }
 
-console.log(impossible);
+console.log(impossible.size);
